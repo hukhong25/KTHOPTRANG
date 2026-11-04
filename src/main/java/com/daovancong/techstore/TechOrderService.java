@@ -5,15 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 /**
- * BÀI TẬP LỚN: KIỂM THỬ PHẦN MỀM (IT6013.2 - K18)
- * BÀI 8 - MỤC L2.1 (LOGBOOK): TẠO PHẦN MỀM BẰNG AI & THỰC HÀNH KIỂM THỬ HỘP TRẮNG
+ * TECHSTORE - DỊCH VỤ XỬ LÝ ĐƠN HÀNG & THANH TOÁN
  *
- * Tác giả: Đào Văn Công
+ * Developer: Đào Văn Công
  * Mã sinh viên: 2023601884
  * Lớp: IT6013.2 - K18
- * Trường Đại học Công nghiệp Hà Nội (HaUI)
- *
- * Đề tài phần mềm độc lập: Hệ thống Xử lý Đơn hàng & Thanh toán Cửa hàng Thiết bị Công nghệ (TechGadget Store Service)
+ * Đề tài: Hệ thống thương mại điện tử thiết bị công nghệ (TechStore)
  */
 @Service
 public class TechOrderService {
@@ -50,7 +47,7 @@ public class TechOrderService {
 
     public static class Voucher {
         private final String code;
-        private final double discountPercent; // Ví dụ: 10.0 = giảm 10%
+        private final double discountPercent; // Phần trăm giảm giá (VD: 10.0 = 10%)
         private final double maxDiscount;      // Trần giảm giá tối đa
         private final double minOrderValue;    // Giá trị đơn hàng tối thiểu
         private final LocalDate expiryDate;    // Ngày hết hạn
@@ -140,83 +137,89 @@ public class TechOrderService {
     }
 
     /**
-     * Phương thức cốt lõi xử lý tính tiền đơn hàng, áp voucher, chiết khấu hội viên,
-     * phí vận chuyển, ưu đãi thanh toán và tích điểm thưởng.
+     * Nghiệp vụ tính toán thanh toán đơn hàng toàn diện:
+     * 1. Kiểm tra tính hợp lệ dữ liệu đầu vào.
+     * 2. Kiểm tra tồn kho và tính tổng tiền hàng (subtotal).
+     * 3. Áp dụng mã giảm giá voucher (kiểm tra hạn sử dụng, giá trị tối thiểu, trần giảm giá).
+     * 4. Áp dụng chiết khấu hạng thành viên (Diamond 5%, Gold 3%, Silver 1%).
+     * 5. Tính phí vận chuyển (Freeship nếu >= 500k & <= 10km, phụ phí cự ly > 10km, phụ phí hỏa tốc).
+     * 6. Áp dụng chiết khấu 2% khi thanh toán trực tuyến (Banking, Ví điện tử).
+     * 7. Tính tổng tiền thanh toán cuối cùng và tích lũy điểm thưởng.
      */
     public OrderResult processOrder(OrderRequest request) {
-        // [Node 1] Validate thông tin đơn hàng
+        // 1. Kiểm tra tính hợp lệ của request đầu vào
         if (request == null || request.getItems() == null || request.getItems().isEmpty()
                 || request.getCustomerPhone() == null || request.getCustomerPhone().trim().isEmpty()
                 || request.getDistanceKm() < 0.0) {
-            throw new IllegalArgumentException("Thông tin đơn hàng không hợp lệ"); // [Node 2]
+            throw new IllegalArgumentException("Thông tin đơn hàng không hợp lệ");
         }
 
-        // [Node 3] Duyệt danh sách sản phẩm, kiểm tra tồn kho và tính tổng tiền hàng
+        // 2. Duyệt từng sản phẩm: kiểm tra tồn kho và tính tổng tiền hàng
         double subTotal = 0.0;
         for (OrderItem item : request.getItems()) {
             if (item.getQuantity() <= 0 || item.getQuantity() > item.getStock()) {
-                throw new IllegalStateException("Sản phẩm không đủ tồn kho hoặc số lượng không hợp lệ"); // [Node 4]
+                throw new IllegalStateException("Sản phẩm không đủ tồn kho hoặc số lượng không hợp lệ");
             }
             subTotal += item.getPrice() * item.getQuantity();
         }
 
-        // [Node 5] Xử lý mã giảm giá Voucher
+        // 3. Xử lý mã giảm giá Voucher
         double voucherDiscount = 0.0;
         if (request.getVoucher() != null) {
             Voucher voucher = request.getVoucher();
             LocalDate today = LocalDate.now();
             if (voucher.getExpiryDate() != null && voucher.getExpiryDate().isBefore(today)) {
-                throw new IllegalArgumentException("Mã giảm giá đã hết hạn sử dụng"); // [Node 6]
+                throw new IllegalArgumentException("Mã giảm giá đã hết hạn sử dụng");
             }
             if (subTotal < voucher.getMinOrderValue()) {
-                throw new IllegalArgumentException("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng voucher"); // [Node 7]
+                throw new IllegalArgumentException("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng voucher");
             }
             double calculatedDiscount = subTotal * (voucher.getDiscountPercent() / 100.0);
             voucherDiscount = (voucher.getMaxDiscount() > 0)
                     ? Math.min(calculatedDiscount, voucher.getMaxDiscount())
-                    : calculatedDiscount; // [Node 8]
+                    : calculatedDiscount;
         }
 
-        // [Node 9] Xử lý chiết khấu thành viên VIP
+        // 4. Xử lý chiết khấu thành viên VIP
         double memberDiscount = 0.0;
         CustomerTier tier = (request.getCustomerTier() != null) ? request.getCustomerTier() : CustomerTier.STANDARD;
         if (tier == CustomerTier.DIAMOND) {
-            memberDiscount = subTotal * 0.05; // [Node 10] Giảm 5%
+            memberDiscount = subTotal * 0.05; // Giảm 5%
         } else if (tier == CustomerTier.GOLD) {
-            memberDiscount = subTotal * 0.03; // [Node 11] Giảm 3%
+            memberDiscount = subTotal * 0.03; // Giảm 3%
         } else if (tier == CustomerTier.SILVER) {
-            memberDiscount = subTotal * 0.01; // [Node 12] Giảm 1%
-        } // [Node 13]
+            memberDiscount = subTotal * 0.01; // Giảm 1%
+        }
 
         double totalAfterDiscounts = Math.max(0.0, subTotal - voucherDiscount - memberDiscount);
 
-        // [Node 14] Tính phí vận chuyển (Freeship nếu đơn sau giảm >= 500k và cự ly <= 10km)
+        // 5. Tính phí vận chuyển (Miễn phí ship nếu đơn sau giảm >= 500k và cự ly <= 10km)
         double shippingFee = 0.0;
         if (totalAfterDiscounts >= 500000.0 && request.getDistanceKm() <= 10.0) {
-            shippingFee = 0.0; // [Node 15] Miễn phí ship
+            shippingFee = 0.0; // Freeship
         } else {
             shippingFee = 30000.0; // Cước cơ bản
             if (request.getDistanceKm() > 10.0) {
-                shippingFee += (request.getDistanceKm() - 10.0) * 5000.0; // [Node 16] Phụ phí cự ly
+                shippingFee += (request.getDistanceKm() - 10.0) * 5000.0; // Phụ phí cự ly
             }
-        } // [Node 17]
+        }
 
         if (request.isExpressDelivery()) {
-            shippingFee += 25000.0; // [Node 18] Phụ phí giao hỏa tốc
+            shippingFee += 25000.0; // Phụ phí giao hỏa tốc
         }
 
-        // [Node 19] Ưu đãi thanh toán trực tuyến (Online Payment Discount: 2%)
+        // 6. Ưu đãi chiết khấu thanh toán trực tuyến (2%)
         double paymentDiscount = 0.0;
         if (request.getPaymentMethod() == PaymentMethod.ONLINE_BANKING || request.getPaymentMethod() == PaymentMethod.E_WALLET) {
-            paymentDiscount = totalAfterDiscounts * 0.02; // [Node 20]
+            paymentDiscount = totalAfterDiscounts * 0.02;
         }
 
-        // [Node 21] Tổng tiền thanh toán cuối cùng và điểm thưởng
+        // 7. Tổng tiền thanh toán cuối cùng và tích điểm thưởng
         double finalAmount = Math.max(0.0, totalAfterDiscounts + shippingFee - paymentDiscount);
-        int loyaltyPoints = (int) (finalAmount / 10000.0); // 10.000đ = 1 điểm
+        int loyaltyPoints = (int) (finalAmount / 10000.0); // 10.000đ = 1 điểm thưởng
         String orderId = "TECH-ORD-" + System.currentTimeMillis();
 
         return new OrderResult(orderId, subTotal, voucherDiscount, memberDiscount,
-                shippingFee, paymentDiscount, finalAmount, loyaltyPoints, "SUCCESS"); // [Node 22]
+                shippingFee, paymentDiscount, finalAmount, loyaltyPoints, "SUCCESS");
     }
 }

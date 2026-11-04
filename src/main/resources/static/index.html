@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechStore - E-Commerce & White-Box Testing Lab | Đào Văn Công (2023601884)</title>
+  <title>TechStore - Cửa Hàng Thiết Bị Công Nghệ | Developer: Đào Văn Công (2023601884)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
@@ -39,7 +39,7 @@
   <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/90 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <!-- Logo & Student Info -->
+        <!-- Logo & Developer Tag -->
         <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('store')">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white font-bold text-xl">
             <i class="fa-solid fa-laptop-code"></i>
@@ -47,9 +47,9 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-lg text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">TechStore</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">HaUI - Bài 8 L2.1</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">E-Commerce Web</span>
             </div>
-            <p class="text-[11px] text-slate-400">SV: <strong class="text-slate-200">Đào Văn Công</strong> - MSV: <span class="text-blue-400 font-mono">2023601884</span></p>
+            <p class="text-[11px] text-slate-400">Dev: <strong class="text-slate-200">Đào Văn Công</strong> - MSV: <span class="text-blue-400 font-mono">2023601884</span></p>
           </div>
         </div>
 
@@ -88,10 +88,7 @@
           <i class="fa-solid fa-ticket"></i> <span>Mã Giảm Giá</span>
         </button>
         <button onclick="switchTab('admin')" id="tabBtn-admin" class="tab-btn px-3 py-1.5 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-chart-line"></i> <span>Quản Trị Admin</span>
-        </button>
-        <button onclick="switchTab('testing')" id="tabBtn-testing" class="tab-btn px-3 py-1.5 rounded-md text-purple-400 bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 flex items-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-flask-vial"></i> <span>Kiểm Thử Hộp Trắng (CFG)</span>
+          <i class="fa-solid fa-chart-line"></i> <span>Quản Trị Hệ Thống</span>
         </button>
       </nav>
     </div>
@@ -162,21 +159,20 @@
           </h2>
 
           <div class="space-y-3 text-xs">
-            <!-- Customer Name & Phone -->
             <div>
               <label class="block text-slate-400 mb-1">Họ tên & Người nhận</label>
               <input type="text" id="orderCustomerName" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-blue-500">
             </div>
             <div>
-              <label class="block text-slate-400 mb-1">Số điện thoại (*Bắt buộc kiểm tra)</label>
+              <label class="block text-slate-400 mb-1">Số điện thoại (*Bắt buộc)</label>
               <input type="text" id="orderPhone" placeholder="VD: 0987654321" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-blue-500">
             </div>
             <div>
               <label class="block text-slate-400 mb-1">Địa chỉ giao hàng</label>
-              <input type="text" id="orderAddress" placeholder="VD: ĐH Công nghiệp Hà Nội, Bắc Từ Liêm, HN" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-blue-500">
+              <input type="text" id="orderAddress" placeholder="VD: Bắc Từ Liêm, Hà Nội" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-blue-500">
             </div>
 
-            <!-- Distance Slider (Nghiệp vụ tính phí vận chuyển) -->
+            <!-- Distance Slider -->
             <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 space-y-2">
               <div class="flex justify-between items-center">
                 <span class="text-slate-300 font-medium">Khoảng cách giao hàng:</span>
@@ -266,7 +262,7 @@
 
           <!-- Submit Checkout Button -->
           <button onclick="submitCheckout()" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 transition active:scale-[0.99] flex items-center justify-center gap-2">
-            <i class="fa-solid fa-shield-check"></i> XÁC NHẬN ĐẶT HÀNG (LÕI TECHORDER)
+            <i class="fa-solid fa-shield-check"></i> XÁC NHẬN ĐẶT HÀNG
           </button>
         </div>
       </div>
@@ -277,7 +273,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-lg font-bold text-slate-100">Lịch Sử Đơn Hàng TechStore</h2>
-          <p class="text-xs text-slate-400">Toàn bộ đơn hàng được ghi nhận và tính toán qua lõi TechOrderService</p>
+          <p class="text-xs text-slate-400">Theo dõi trạng thái và chi tiết hóa đơn thanh toán</p>
         </div>
         <button onclick="loadOrders()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
           <i class="fa-solid fa-arrows-rotate"></i> Làm mới
@@ -301,7 +297,7 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 5: QUẢN TRỊ ADMIN (DASHBOARD) ==================== -->
+    <!-- ==================== TAB 5: QUẢN TRỊ HỆ THỐNG (ADMIN DASHBOARD) ==================== -->
     <section id="tabContent-admin" class="tab-content hidden space-y-6">
       <!-- KPI Stats Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -366,73 +362,11 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 6: KIỂM THỬ HỘP TRẮNG (WHITE-BOX TESTING) ==================== -->
-    <section id="tabContent-testing" class="tab-content hidden space-y-6">
-      <!-- Student Banner -->
-      <div class="p-6 rounded-2xl bg-gradient-to-r from-purple-950/60 via-slate-900 to-indigo-950/60 border border-purple-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">Bài 8 - Mục L2.1 (Logbook)</span>
-            <span class="text-xs text-slate-400">Kiểm thử phần mềm</span>
-          </div>
-          <h2 class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-200">
-            Kiểm Thử Hộp Trắng Phương Thức processOrder()
-          </h2>
-          <p class="text-xs text-slate-300 mt-1">
-            Sinh viên: <strong class="text-white">Đào Văn Công</strong> | MSV: <span class="font-mono text-purple-300">2023601884</span> | Lớp: IT6013.2 - K18 (GVHD: TS. Trần Tiến Dũng)
-          </p>
-        </div>
-        <button onclick="runWhiteBoxSuite()" class="px-5 py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-500/25 flex items-center gap-2 active:scale-95 transition">
-          <i class="fa-solid fa-play"></i> CHẠY 8 CA KIỂM THỬ HỘP TRẮNG
-        </button>
-      </div>
-
-      <!-- CFG Metrics & Formula Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="text-[11px] text-slate-400">Số Nút Đồ Thị (Nodes - N)</div>
-          <div class="text-2xl font-bold font-mono text-purple-400">22 nút</div>
-          <div class="text-[10px] text-slate-500">Từ Node 1 (Validate) -> Node 22 (Return)</div>
-        </div>
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="text-[11px] text-slate-400">Số Cạnh Chuyển Hướng (Edges - E)</div>
-          <div class="text-2xl font-bold font-mono text-indigo-400">29 cạnh</div>
-          <div class="text-[10px] text-slate-500">Bao gồm 8 nhánh điều kiện và rẽ nhánh</div>
-        </div>
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="text-[11px] text-slate-400">Số Nút Vị Từ (Predicate - Pr)</div>
-          <div class="text-2xl font-bold font-mono text-blue-400">8 nút</div>
-          <div class="text-[10px] text-slate-500">Các câu lệnh if / switch phân nhánh</div>
-        </div>
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="text-[11px] text-slate-400">Độ Phức Tạp McCabe V(G)</div>
-          <div class="text-2xl font-bold font-mono text-emerald-400">V(G) = 9</div>
-          <div class="text-[10px] text-slate-500">V(G) = E - N + 2P = 29 - 22 + 2 = 9</div>
-        </div>
-      </div>
-
-      <!-- Test Cases Live Execution Table -->
-      <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="font-bold text-sm text-slate-100 flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-purple-400"></i> Bảng Kết Quả Thực Thi 8 Đường Dẫn Cơ Sở (Basis Paths)
-          </h3>
-          <span id="testRunStatusBadge" class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
-            Sẵn sàng chạy
-          </span>
-        </div>
-
-        <div class="space-y-3" id="testCaseResultsList">
-          <!-- Rendered via JS -->
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- FOOTER -->
   <footer class="mt-auto border-t border-slate-800/80 bg-slate-900/60 py-4 text-center text-xs text-slate-400">
-    <p>Dự án Kiểm thử phần mềm - Bán thiết bị công nghệ TechStore | Sinh viên: <strong class="text-slate-200">Đào Văn Công (2023601884)</strong> - Lớp IT6013.2</p>
+    <p>Dự án Hệ Thống Thương Mại Điện Tử TechStore | Developer: <strong class="text-slate-200">Đào Văn Công (2023601884)</strong></p>
   </footer>
 
   <!-- TOAST NOTIFICATION -->
@@ -448,7 +382,7 @@
     let vouchers = [];
     let customers = [];
     let currentUser = null;
-    let cart = []; // Array of { product, quantity }
+    let cart = [];
     let activeCategory = 'ALL';
     let appliedVoucher = null;
 
@@ -458,7 +392,6 @@
       await loadProducts();
       await loadVouchers();
       calculateCartSummary();
-      runWhiteBoxSuite(); // run tests initially so whitebox tab is populated
     });
 
     // Toast Utility
@@ -743,7 +676,6 @@
       `).join('');
     }
 
-    // Checkout Calculation (Emulates TechOrderService logic in frontend for instant reactivity)
     function onDistanceChanged(val) {
       document.getElementById('distanceLabel').textContent = `${val} km`;
       calculateCartSummary();
@@ -760,7 +692,6 @@
           const calc = subtotal * (appliedVoucher.discountPercent / 100.0);
           voucherDiscount = (appliedVoucher.maxDiscount > 0) ? Math.min(calc, appliedVoucher.maxDiscount) : calc;
         } else {
-          // not eligible anymore
           voucherDiscount = 0;
         }
       }
@@ -779,7 +710,7 @@
 
       const totalAfterDiscounts = Math.max(0, subtotal - voucherDiscount - memberDiscount);
 
-      // Shipping Fee Calculation (Node 14 -> 18)
+      // Shipping Fee
       const distance = parseFloat(document.getElementById('distanceRange').value) || 5;
       const isExpress = document.getElementById('expressCheckbox').checked;
       let shippingFee = 0;
@@ -797,7 +728,7 @@
       }
       document.getElementById('invoiceShippingFee').textContent = (shippingFee === 0) ? '0 đ (Freeship)' : formatCurrency(shippingFee);
 
-      // Payment Discount (Node 19 -> 20)
+      // Payment Discount
       const payMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
       let paymentDiscount = 0;
       if (payMethod === 'ONLINE_BANKING' || payMethod === 'E_WALLET') {
@@ -892,8 +823,8 @@
           updateCartBadge();
           renderCartItems();
           calculateCartSummary();
-          await loadProducts(); // reload stock counts
-          await loadCustomers(); // reload points
+          await loadProducts();
+          await loadCustomers();
           switchTab('orders');
         } else {
           showToast(`Lỗi: ${json.message}`, 'error');
@@ -1136,53 +1067,6 @@
         }
       } catch (err) {
         showToast('Lỗi khi xóa sản phẩm', 'error');
-      }
-    }
-
-    // White-Box Testing Runner
-    async function runWhiteBoxSuite() {
-      const container = document.getElementById('testCaseResultsList');
-      const badge = document.getElementById('testRunStatusBadge');
-      badge.textContent = 'Đang thực thi 8 test case...';
-      badge.className = 'text-xs px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold animate-pulse';
-
-      try {
-        const res = await fetch('/api/whitebox/run');
-        const json = await res.json();
-        if (json.success) {
-          const results = json.data;
-          badge.textContent = '100% Tests PASSED (8/8)';
-          badge.className = 'text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold';
-
-          container.innerHTML = results.map(t => `
-            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800/80 space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="font-mono font-bold text-xs text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">${t.testCaseId}</span>
-                  <span class="font-bold text-slate-200">${t.scenarioName}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] text-slate-500 font-mono">${t.executionTimeMs} ms</span>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                    <i class="fa-solid fa-check"></i> PASS
-                  </span>
-                </div>
-              </div>
-
-              <div class="text-[11px] text-slate-400 font-mono bg-slate-900/60 p-2 rounded border border-slate-800">
-                <div class="text-indigo-300 font-semibold mb-0.5">${t.basisPath}</div>
-                <div><strong class="text-slate-300">Input:</strong> ${t.inputDescription}</div>
-                <div><strong class="text-slate-300">Mong đợi:</strong> ${t.expectedResult}</div>
-                <div class="text-emerald-400"><strong class="text-slate-300">Thực tế:</strong> ${t.actualResult}</div>
-              </div>
-            </div>
-          `).join('');
-
-          showToast('Đã chạy xong 8 kịch bản kiểm thử hộp trắng: 100% PASS');
-        }
-      } catch (err) {
-        badge.textContent = 'Lỗi thực thi kiểm thử';
-        badge.className = 'text-xs px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold';
       }
     }
 
