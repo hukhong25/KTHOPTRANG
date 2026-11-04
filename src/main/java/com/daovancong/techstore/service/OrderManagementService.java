@@ -18,6 +18,8 @@ public class OrderManagementService {
     private final DataStore dataStore;
     private final TechOrderService techOrderService;
 
+    private static final Set<String> VALID_STATUSES = Set.of("PENDING", "CONFIRMED", "SHIPPING", "DELIVERED", "CANCELLED");
+
     public OrderManagementService(DataStore dataStore, TechOrderService techOrderService) {
         this.dataStore = dataStore;
         this.techOrderService = techOrderService;
@@ -28,24 +30,35 @@ public class OrderManagementService {
             throw new IllegalArgumentException("Giỏ hàng rỗng hoặc thông tin đơn hàng không hợp lệ");
         }
 
-        // 1. Kiểm tra và chuẩn bị danh sách OrderItem cho TechOrderService
+        // 1. Gộp số lượng nếu có trùng productId (khắc phục lỗi DEF-01 do Tester phát hiện)
+        Map<String, Integer> aggregatedQuantities = new LinkedHashMap<>();
+        for (CheckoutRequest.CartItemDto cartItem : req.getItems()) {
+            if (cartItem == null || cartItem.getProductId() == null || cartItem.getProductId().trim().isEmpty()) {
+                throw new IllegalArgumentException("Thông tin sản phẩm trong giỏ không hợp lệ");
+            }
+            aggregatedQuantities.merge(cartItem.getProductId(), cartItem.getQuantity(), Integer::sum);
+        }
+
         List<OrderItem> serviceItems = new ArrayList<>();
         List<OrderItemRecord> orderItemRecords = new ArrayList<>();
 
-        for (CheckoutRequest.CartItemDto cartItem : req.getItems()) {
-            Product prod = dataStore.getProduct(cartItem.getProductId());
+        for (Map.Entry<String, Integer> entry : aggregatedQuantities.entrySet()) {
+            String prodId = entry.getKey();
+            int totalQty = entry.getValue();
+
+            Product prod = dataStore.getProduct(prodId);
             if (prod == null) {
-                throw new IllegalArgumentException("Sản phẩm không tồn tại: " + cartItem.getProductId());
+                throw new IllegalArgumentException("Sản phẩm không tồn tại: " + prodId);
             }
-            if (cartItem.getQuantity() <= 0) {
+            if (totalQty <= 0) {
                 throw new IllegalStateException("Số lượng sản phẩm " + prod.getName() + " phải lớn hơn 0");
             }
-            if (cartItem.getQuantity() > prod.getStock()) {
+            if (totalQty > prod.getStock()) {
                 throw new IllegalStateException("Sản phẩm " + prod.getName() + " không đủ tồn kho (Còn: " + prod.getStock() + ")");
             }
 
-            serviceItems.add(new OrderItem(prod.getId(), prod.getName(), prod.getPrice(), cartItem.getQuantity(), prod.getStock()));
-            orderItemRecords.add(new OrderItemRecord(prod.getId(), prod.getName(), prod.getPrice(), cartItem.getQuantity()));
+            serviceItems.add(new OrderItem(prod.getId(), prod.getName(), prod.getPrice(), totalQty, prod.getStock()));
+            orderItemRecords.add(new OrderItemRecord(prod.getId(), prod.getName(), prod.getPrice(), totalQty));
         }
 
         // 2. Tìm voucher nếu có
@@ -68,7 +81,7 @@ public class OrderManagementService {
         }
         if (tier == null) tier = CustomerTier.STANDARD;
 
-        // 4. Gọi lõi xử lý TechOrderService (đáp ứng đúng bài tập kiểm thử hộp trắng L2.1)
+        // 4. Gọi lõi xử lý TechOrderService
         OrderRequest orderReq = new OrderRequest(
                 req.getCustomerId(),
                 req.getCustomerPhone(),
@@ -83,9 +96,9 @@ public class OrderManagementService {
         OrderResult result = techOrderService.processOrder(orderReq);
 
         // 5. Trừ số lượng tồn kho của các sản phẩm đã mua
-        for (CheckoutRequest.CartItemDto item : req.getItems()) {
-            Product prod = dataStore.getProduct(item.getProductId());
-            prod.setStock(prod.getStock() - item.getQuantity());
+        for (Map.Entry<String, Integer> entry : aggregatedQuantities.entrySet()) {
+            Product prod = dataStore.getProduct(entry.getKey());
+            prod.setStock(prod.getStock() - entry.getValue());
         }
 
         // 6. Cộng điểm thưởng cho khách hàng nếu có
@@ -135,7 +148,13 @@ public class OrderManagementService {
     }
 
     public Order updateStatus(String orderId, String newStatus) {
+        if (newStatus == null || !VALID_STATUSES.contains(newStatus.toUpperCase())) {
+            throw new IllegalArgumentException("Trạng thái đơn hàng không hợp lệ: " + newStatus);
+        }
         Order o = getOrder(orderId);
+        if ("CANCELLED".equalsIgnoreCase(o.getStatus()) || "DELIVERED".equalsIgnoreCase(o.getStatus())) {
+            throw new IllegalStateException("Không thể đổi trạng thái đơn hàng đã " + o.getStatus());
+        }
         o.setStatus(newStatus.toUpperCase());
         return o;
     }
