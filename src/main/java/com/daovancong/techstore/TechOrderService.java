@@ -2,6 +2,7 @@ package com.daovancong.techstore;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * BÀI TẬP LỚN: KIỂM THỬ PHẦN MỀM (IT6013.2 - K18)
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * Đề tài phần mềm độc lập: Hệ thống Xử lý Đơn hàng & Thanh toán Cửa hàng Thiết bị Công nghệ (TechGadget Store Service)
  */
+@Service
 public class TechOrderService {
 
     public static class OrderItem {
